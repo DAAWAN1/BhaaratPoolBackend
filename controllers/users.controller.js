@@ -48,12 +48,12 @@ const getUser= async(req,res)=>{
 }
 
 const createUser=async(req,res)=>{
+  const {id}=req.params;
   const {email,password,name,address,aadharCardNumber}=req.body;
   let validateUser=validate(email,password,null,name,address,aadharCardNumber);
   if(validateUser.success){
-    let user=new User({email,password,name,address,aadharCardNumber});
     try{
-      await user.save();
+      let user=await User.updateOne({'_id':id},{email,password,name,address,aadharCardNumber});
     }catch(error){
       res.json({'message':error.message,'success':false});
     }

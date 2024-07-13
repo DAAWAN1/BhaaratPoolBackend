@@ -6,13 +6,13 @@ const { notFound }=require('../utility/utility')
 
 router.get('/:id',getUser);
 
-router.post('/',createUser);
-
-router.put('/:id',updateUser);
-
 router.post('/sendOtp',sendOtp);
 
 router.post('/verifyOtp',verifyOtp);
+
+router.post('/:id',createUser);
+
+router.put('/:id',updateUser);
 
 router.all('/*',notFound)
 
