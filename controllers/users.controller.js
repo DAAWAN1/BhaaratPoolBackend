@@ -14,6 +14,7 @@ const validate=(email,password,phoneNumber,name,address,aadharCardNumber)=>{
   try{
     emailSchema.parse(email) 
     passwordSchema.parse(password)
+    if(phoneNumber)
     phoneSchema.parse(phoneNumber)
     nameSchema.parse(name)
     addressSchema.parse(address)
@@ -47,11 +48,10 @@ const getUser= async(req,res)=>{
 }
 
 const createUser=async(req,res)=>{
-  const {email,password,phoneNumber,name,address,aadharCardNumber}=req.body;
-  console.log(phoneNumber);
-  let validateUser=validate(email,password,phoneNumber,name,address,aadharCardNumber);
+  const {email,password,name,address,aadharCardNumber}=req.body;
+  let validateUser=validate(email,password,null,name,address,aadharCardNumber);
   if(validateUser.success){
-    let user=new User({email,password,phoneNumber,name,address,aadharCardNumber});
+    let user=new User({email,password,name,address,aadharCardNumber});
     try{
       await user.save();
     }catch(error){
@@ -80,19 +80,23 @@ const updateUser=async(req,res)=>{
   }
 }
 
-const registerUser=async(req,res)=>{
+const sendOtp=async(req,res)=>{
    const {phoneNumber}=req.body;
-   const user=await User.findOne({phoneNumber});
-   const otp=generateOTP();
+   let user=await User.findOne({phoneNumber});
+   if(!user){
+    user=new User({phoneNumber});
+    await user.save();
+  }
+  const otp=generateOTP();
    try{
     await User.updateOne({'_id':user._id},{otp})
    }catch(error){
     res.json({'message':error.message,'success':false});
    }
-   res.json({'message':'otp created successfully','succes':true});
+   res.json({'message':'otp send successfully','succes':true});
 }
 
-const verifyUser=async(req,res)=>{
+const verifyOtp=async(req,res)=>{
   const {otp}=req.body;
   const user=await User.findOne({otp});
   if(user){
@@ -106,5 +110,5 @@ const verifyUser=async(req,res)=>{
 }
 
 module.exports={
-    getUser,createUser,updateUser,registerUser,verifyUser
+    getUser,createUser,updateUser,sendOtp,verifyOtp
 }

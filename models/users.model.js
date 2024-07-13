@@ -4,7 +4,7 @@ const UserSchema=new mongoose.Schema({
     'name':{
         type:String,
         default:'',
-        required:true 
+        required:false 
     },
     'phoneNumber':{
         type:Number,
@@ -13,19 +13,21 @@ const UserSchema=new mongoose.Schema({
     },
     'email':{
         type:String,
-        required:true,
+        required:false,
         trim:true,
         unique:true,
         lowercase:true,
     },
     'password':{
         type:String,
-        required:true,
-        select:false
+        required:false,
+        select:false,
+        default:''
     },
     'address':{
         type:String,
-        required:true
+        required:false,
+        default:''
     },
     'is_verified':{
         type:Boolean,
@@ -44,7 +46,8 @@ const UserSchema=new mongoose.Schema({
     },
     'aadharCardNumber':{
         type:Number,
-        required:true
+        required:false,
+        default:''
     },
     'otp':{
         type:Number,
